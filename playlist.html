@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>playlist</title>
+
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* 🌌 배경 */
+body {
+  padding: 40px 0;
+  background: radial-gradient(circle at top, #1b2735, #090a0f);
+  color: #e0e0ff;
+  font-family: Arial, sans-serif;
+}
+
+/* ⭐ 별 효과 */
+body::before {
+  content: "";
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  background: url('https://www.transparenttextures.com/patterns/stardust.png');
+  opacity: 0.3;
+  z-index: -1;
+}
+
+/* 🌙 가운데 카드 */
+.container {
+  max-width: 700px;
+  margin: auto;
+  background: rgba(255,255,255,0.05);
+  padding: 30px;
+  border-radius: 15px;
+  backdrop-filter: blur(8px);
+  box-shadow: 0 0 30px rgba(0,0,0,0.5);
+}
+
+/* 헤더 */
+#album-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.artist-name {
+  color: #FF4500; /* 필수 색상 */
+  text-shadow: 0 0 10px #FF4500;
+}
+
+h1 {
+  font-size: 32px;
+  text-shadow: 0 0 15px #74b9ff;
+}
+
+.subtitle {
+  color: #bbb;
+}
+
+/* 가사 */
+.lyrics-box {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid #F0E6BC; /* 필수 색상 */
+  padding: 15px;
+  border-radius: 12px;
+  margin-top: 10px;
+}
+
+.highlight {
+  color: #F0E6BC;
+  text-shadow: 0 0 8px #F0E6BC;
+  font-weight: bold;
+}
+
+/* 리스트 */
+#charm-list {
+  list-style: none;
+  margin-top: 10px;
+}
+
+#charm-list li {
+  padding: 10px;
+  margin-bottom: 6px;
+  border-left: 4px solid #FF4500;
+  background: rgba(255,255,255,0.05);
+}
+
+/* 테이블 */
+#track-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+#track-table th, #track-table td {
+  border: 1px solid #F0E6BC;
+  padding: 10px;
+  text-align: center;
+}
+
+#track-table th {
+  background: #F0E6BC;
+  color: #333;
+}
+
+#track-table tr:nth-child(even) {
+  background: rgba(255,255,255,0.05);
+}
+
+/* 버튼 */
+.listen-btn {
+  margin-top: 20px;
+  width: 100%;
+  padding: 14px;
+  background: #FF4500;
+  border: none;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.listen-btn:hover {
+  box-shadow: 0 0 20px #FF4500;
+  transform: scale(1.05);
+}
+
+/* 간격 */
+section {
+  margin-bottom: 35px;
+}
+</style>
+
+</head>
+
+<body>
+
+<div class="container">
+
+<header id="album-header">
+  <p class="artist-name">아이브 (IVE)</p>
+  <h1>EP 1집 'I'VE MINE'</h1>
+  <p class="subtitle">우주처럼 깊고 몽환적인 플레이리스트</p>
+</header>
+
+<section class="lyrics-section">
+  <h2>🎵 킬링 파트 가사</h2>
+  <div class="lyrics-box">
+    <p>숨참고 Love Dive</p>
+    <p class="highlight">우리만의 자유로운 nineteen's kitsch</p>
+    <p>아주 오묘한 그 빛깔로 날 빼곡히 채워</p>
+  </div>
+</section>
+
+<section class="info-section">
+  <h2>✨ 입덕 포인트</h2>
+  <ul id="charm-list">
+    <li>몽환적인 사운드와 신비로운 분위기</li>
+    <li>우주처럼 확장되는 감정선</li>
+    <li>빛나는 퍼포먼스와 비주얼</li>
+  </ul>
+</section>
+
+<section class="track-section">
+  <h2>🎧 추천 플레이리스트</h2>
+  <table id="track-table">
+    <thead>
+      <tr>
+        <th>Track</th>
+        <th>곡명</th>
+        <th>Play Time</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td>01</td><td>Baddie</td><td>2:34</td></tr>
+      <tr><td>02</td><td>Either Way</td><td>2:46</td></tr>
+      <tr><td>03</td><td>Love Dive</td><td>2:57</td></tr>
+      <tr><td>04</td><td>Kitsch</td><td>3:15</td></tr>
+      <tr><td>05</td><td>I AM</td><td>3:03</td></tr>
+      <tr><td>06</td><td>After LIKE</td><td>2:56</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<footer id="album-footer">
+  <button class="listen-btn">🚀 전곡 스밍하러 가기</button>
+</footer>
+
+</div>
+
+</body>
+</html>
