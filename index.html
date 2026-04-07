@@ -1,176 +1,320 @@
 <!doctype html>
 <html lang="ko">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>My Project Hub</title>
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>My Project Hub</title>
 
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
+<style>
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
 
-      body {
-        font-family: Arial, sans-serif;
-        height: 100vh;
-        overflow: hidden;
-        color: white;
-        background: radial-gradient(circle at top, #0f2027, #090a0f);
-      }
+body {
+  font-family: Arial, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+  color: white;
+  background: radial-gradient(circle at top, #0a0f1c, #000);
+}
 
-      /* 🌌 별 배경 */
-      canvas {
-        position: fixed;
-        top: 0;
-        left: 0;
-        z-index: -1;
-      }
+/* ⭐ 별 + 눈 캔버스 */
+canvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: -2;
+}
 
-      /* 중앙 컨테이너 */
-      .container {
-        height: 100%;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-      }
+/* ❄ 눈 쌓인 바닥 */
+.snow-ground {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  height: 120px;
+  background: linear-gradient(#fff, #dfefff);
+  border-top-left-radius: 50% 40px;
+  border-top-right-radius: 50% 40px;
+  z-index: -1;
+}
 
-      /* 제목 */
-      h1 {
-        font-size: 40px;
-        margin-bottom: 10px;
-        text-shadow: 0 0 20px #00ffff;
-      }
+/* 🏠 집 */
+.house {
+  position: fixed;
+  bottom: 80px;
+  left: 10%;
+  width: 120px;
+  height: 100px;
+  border: 2px solid #aaa;
+}
 
-      .subtitle {
-        margin-bottom: 50px;
-        color: #ccc;
-      }
+.house::before {
+  content: "";
+  position: absolute;
+  top: -60px;
+  left: -10px;
+  width: 0;
+  height: 0;
+  border-left: 70px solid transparent;
+  border-right: 70px solid transparent;
+  border-bottom: 60px solid #aaa;
+}
 
-      /* 카드 영역 */
-      .card-container {
-        display: flex;
-        gap: 30px;
-      }
+/* 창문 빛 */
+.window {
+  position: absolute;
+  width: 25px;
+  height: 25px;
+  background: #ffd36b;
+  top: 40px;
+  left: 45px;
+  box-shadow: 0 0 15px #ffd36b;
+}
 
-      /* 카드 */
-      .card {
-        width: 220px;
-        height: 280px;
-        background: rgba(255, 255, 255, 0.05);
-        border-radius: 15px;
-        backdrop-filter: blur(10px);
-        text-align: center;
-        padding: 20px;
-        cursor: pointer;
-        transition: 0.4s;
-        border: 1px solid rgba(255, 255, 255, 0.2);
-      }
+/* 🛷 산타 (실루엣) */
+.santa {
+  position: fixed;
+  top: 80px;
+  left: -200px;
+  width: 150px;
+  height: 40px;
+  border-top: 3px solid white;
+  border-radius: 50%;
+  animation: santaMove 20s linear infinite;
+}
 
-      .card:hover {
-        transform: translateY(-10px) scale(1.05);
-        box-shadow: 0 0 25px #00ffff;
-      }
+@keyframes santaMove {
+  0% { left: -200px; }
+  100% { left: 110%; }
+}
 
-      /* 아이콘 */
-      .icon {
-        font-size: 60px;
-        margin-bottom: 20px;
-      }
+/* 🍪 쿠키 친구 */
+.cookie {
+  position: fixed;
+  bottom: 100px;
+  width: 30px;
+  height: 30px;
+  background: #c58a4b;
+  border-radius: 50%;
+  animation: walk 6s infinite alternate ease-in-out;
+}
 
-      /* 버튼 */
-      .btn {
-        margin-top: 20px;
-        padding: 10px 15px;
-        background: linear-gradient(45deg, #6c5ce7, #00cec9);
-        border: none;
-        border-radius: 8px;
-        color: white;
-        cursor: pointer;
-      }
+.cookie::after {
+  content: "";
+  position: absolute;
+  width: 5px;
+  height: 5px;
+  background: black;
+  border-radius: 50%;
+  top: 8px;
+  left: 8px;
+}
 
-      .btn:hover {
-        box-shadow: 0 0 15px #00cec9;
-      }
+.cookie2 {
+  left: 60%;
+  animation-delay: 2s;
+}
 
-      /* 반응형 */
-      @media (max-width: 600px) {
-        .card-container {
-          flex-direction: column;
-        }
-      }
-    </style>
-  </head>
+.cookie1 {
+  left: 50%;
+}
 
-  <body>
-    <canvas id="stars"></canvas>
+@keyframes walk {
+  0% { transform: translateX(0); }
+  100% { transform: translateX(60px); }
+}
 
-    <div class="container">
-      <h1>🌌 My Project Hub</h1>
-      <p class="subtitle">내가 만든 웹 프로젝트 모음</p>
+/* 🌊 얼어붙은 호수 */
+.lake {
+  position: fixed;
+  bottom: 60px;
+  left: 40%;
+  width: 200px;
+  height: 60px;
+  background: rgba(180, 220, 255, 0.3);
+  border-radius: 50%;
+  backdrop-filter: blur(5px);
+}
 
-      <div class="card-container">
-        <!-- 패스트오더 -->
-        <div class="card" onclick="goTo('fastorder.html')">
-          <div class="icon">🍔</div>
-          <h2>패스트오더</h2>
-          <p>카페 주문 UI 프로젝트</p>
-          <button class="btn">보러가기</button>
-        </div>
+/* 중앙 */
+.container {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
 
-        <!-- 플레이리스트 -->
-        <div class="card" onclick="goTo('playlist.html')">
-          <div class="icon">🎧</div>
-          <h2>플레이리스트</h2>
-          <p>우주 테마 음악 소개</p>
-          <button class="btn">보러가기</button>
-        </div>
-      </div>
+/* 제목 */
+h1 {
+  font-size: 40px;
+  margin-bottom: 10px;
+  text-shadow: 0 0 20px #00ffff;
+}
+
+.subtitle {
+  margin-bottom: 50px;
+  color: #ccc;
+}
+
+/* 카드 */
+.card-container {
+  display: flex;
+  gap: 30px;
+}
+
+.card {
+  width: 220px;
+  height: 280px;
+  background: rgba(255,255,255,0.05);
+  border-radius: 15px;
+  backdrop-filter: blur(10px);
+  text-align: center;
+  padding: 20px;
+  cursor: pointer;
+  transition: 0.4s;
+  border: 1px solid rgba(255,255,255,0.2);
+}
+
+.card:hover {
+  transform: translateY(-10px) scale(1.05);
+  box-shadow: 0 0 25px #00ffff;
+}
+
+.icon {
+  font-size: 60px;
+  margin-bottom: 20px;
+}
+
+.btn {
+  margin-top: 20px;
+  padding: 10px 15px;
+  background: linear-gradient(45deg, #6c5ce7, #00cec9);
+  border: none;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+}
+
+.btn:hover {
+  box-shadow: 0 0 15px #00cec9;
+}
+
+@media (max-width: 600px) {
+  .card-container {
+    flex-direction: column;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<canvas id="bg"></canvas>
+
+<div class="santa"></div>
+
+<div class="house">
+  <div class="window"></div>
+</div>
+
+<div class="lake"></div>
+
+<div class="cookie cookie1"></div>
+<div class="cookie cookie2"></div>
+
+<div class="snow-ground"></div>
+
+<div class="container">
+  <h1>🌌 My Project Hub</h1>
+  <p class="subtitle">내가 만든 웹 프로젝트 모음</p>
+
+  <div class="card-container">
+    <div class="card" onclick="goTo('fastorder.html')">
+      <div class="icon">🍔</div>
+      <h2>패스트오더</h2>
+      <p>카페 주문 UI 프로젝트</p>
+      <button class="btn">보러가기</button>
     </div>
 
-    <script>
-      /* 🚀 페이지 이동 */
-      function goTo(page) {
-        window.location.href = page;
-      }
+    <div class="card" onclick="goTo('playlist.html')">
+      <div class="icon">🎧</div>
+      <h2>플레이리스트</h2>
+      <p>우주 테마 음악 소개</p>
+      <button class="btn">보러가기</button>
+    </div>
 
-      /* 🌌 별 애니메이션 */
-      const canvas = document.getElementById("stars");
-      const ctx = canvas.getContext("2d");
+    <div class="card" onclick="goTo('BuckerList.html')">
+      <div class="icon">✨</div>
+      <h2>버킷리스트</h2>
+      <p>우리팀 버킷리스트</p>
+      <button class="btn">보러가기</button>
+    </div>
+  </div>
+</div>
 
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
+<script>
+function goTo(page) {
+  window.location.href = page;
+}
 
-      let stars = [];
+/* ⭐ 별 + ❄ 눈 */
+const canvas = document.getElementById("bg");
+const ctx = canvas.getContext("2d");
 
-      for (let i = 0; i < 100; i++) {
-        stars.push({
-          x: Math.random() * canvas.width,
-          y: Math.random() * canvas.height,
-          r: Math.random() * 2,
-        });
-      }
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
 
-      function draw() {
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
+let stars = [];
+let snow = [];
 
-        ctx.fillStyle = "white";
+for (let i = 0; i < 80; i++) {
+  stars.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 2
+  });
+}
 
-        stars.forEach((s) => {
-          ctx.beginPath();
-          ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
-          ctx.fill();
+for (let i = 0; i < 120; i++) {
+  snow.push({
+    x: Math.random() * canvas.width,
+    y: Math.random() * canvas.height,
+    r: Math.random() * 3,
+    speed: Math.random() * 1 + 0.5
+  });
+}
 
-          s.y += 0.2;
-          if (s.y > canvas.height) s.y = 0;
-        });
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        requestAnimationFrame(draw);
-      }
+  ctx.fillStyle = "white";
 
-      draw();
-    </script>
-  </body>
+  stars.forEach(s => {
+    ctx.beginPath();
+    ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+    ctx.fill();
+  });
+
+  snow.forEach(f => {
+    ctx.beginPath();
+    ctx.arc(f.x, f.y, f.r, 0, Math.PI * 2);
+    ctx.fill();
+
+    f.y += f.speed;
+    if (f.y > canvas.height) {
+      f.y = 0;
+      f.x = Math.random() * canvas.width;
+    }
+  });
+
+  requestAnimationFrame(draw);
+}
+
+draw();
+</script>
+
+</body>
 </html>
