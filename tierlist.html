@@ -1,0 +1,518 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>우리 조 커스텀 티어 리스트</title>
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css"
+    />
+
+    <style>
+      /* 1. 전체 초기화 */
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+      body {
+        font-family: "Pretendard", sans-serif;
+        padding: 40px 20px;
+        background-color: #f4f4f5;
+      }
+      header {
+        text-align: center;
+        margin-bottom: 40px;
+      }
+      h1 {
+        font-size: 2.5rem;
+        margin-bottom: 10px;
+        color: #333;
+      }
+      p {
+        color: #666;
+        font-size: 1.1rem;
+      }
+
+      /* =========================================
+     메인 레이아웃 (보드 + 사이드 패널)
+   ========================================= */
+      .layout-wrapper {
+        max-width: 1200px;
+        margin: 0 auto;
+
+        display: flex;
+        flex-wrap: wrap;
+        gap: 20px;
+      }
+
+      /* 2. 티어 리스트 보드 */
+      .tier-board {
+        background: #1e1e1e;
+        border-radius: 12px;
+        border: 2px solid #333;
+        overflow: hidden;
+
+        display: flex;
+        flex-direction: column;
+        flex-grow: 1;
+      }
+
+      /* 3. 사이드 패널 */
+      .side-panel {
+        width: 320px;
+        display: flex;
+        flex-direction: column;
+      }
+
+      /* =========================================
+     티어 행
+   ========================================= */
+      .tier-row {
+        border-bottom: 2px solid #333;
+        min-height: 120px;
+
+        display: flex;
+      }
+      .tier-row:last-child {
+        border-bottom: none;
+      }
+
+      /* 티어 라벨 */
+      .tier-label {
+        width: 120px;
+        font-size: 2rem;
+        font-weight: bold;
+        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-shrink: 0;
+      }
+
+      .rank-s {
+        background-color: #ff7f7f;
+      }
+      .rank-a {
+        background-color: #ffbf7f;
+      }
+      .rank-b {
+        background-color: #ffff7f;
+      }
+      .rank-c {
+        background-color: #7fff7f;
+      }
+      .rank-d {
+        background-color: #7fbfff;
+      }
+
+      /* =========================================
+     드롭 영역 / 아이템 정렬
+   ========================================= */
+      .tier-items,
+      .item-pool {
+        padding: 15px;
+        gap: 10px;
+      }
+
+      .tier-items {
+        background-color: #2b2b2b;
+
+        display: flex;
+        flex-wrap: wrap;
+        flex-grow: 1;
+      }
+
+      /* 아이템 대기소 */
+      .item-pool {
+        background-color: #e5e7eb;
+        border-radius: 12px;
+        min-height: 200px;
+
+        display: flex;
+        flex-wrap: wrap;
+      }
+
+      /* =========================================
+     미리보기
+   ========================================= */
+      .preview-box {
+        background-color: #ffffff;
+        border-radius: 12px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.05);
+
+        text-align: center;
+        min-height: 250px;
+
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .preview-box img {
+        width: 100%;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 8px;
+        margin-bottom: 10px;
+      }
+
+      .preview-box p {
+        font-weight: bold;
+        font-size: 1.2rem;
+        color: #333;
+      }
+
+      .preview-placeholder {
+        color: #9ca3af;
+        font-size: 0.9rem;
+      }
+
+      /* =========================================
+     아이템
+   ========================================= */
+      .item {
+        width: 80px;
+        height: 80px;
+        cursor: grab;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+
+        position: relative;
+        transition: transform 0.2s;
+      }
+
+      .item:hover {
+        transform: scale(1.05);
+        border: 2px solid #3b82f6;
+      }
+
+      .item img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+      }
+
+      .item .item-name {
+        position: absolute;
+        bottom: 0;
+        width: 100%;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        font-size: 0.7rem;
+        text-align: center;
+        padding: 4px 0;
+        pointer-events: none;
+      }
+      .item.selected {
+        outline: 3px solid red;
+      }
+      /* =========================================
+     반응형
+   ========================================= */
+      @media (max-width: 800px) {
+        .side-panel {
+          width: 100%;
+        }
+
+        .tier-row {
+          flex-direction: column;
+        }
+
+        .tier-label {
+          width: 100%;
+          height: 50px;
+          font-size: 1.5rem;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <header>
+      <h1>🏆 우리 조 커스텀 티어 리스트</h1>
+      <p>우리 조원들이 직접 선정한 10개 내외의 항목을 평가해 봅시다.</p>
+    </header>
+
+    <div class="layout-wrapper">
+      <main class="tier-board">
+        <div class="tier-row">
+          <div class="tier-label rank-s">S</div>
+          <div
+            class="tier-items"
+            ondrop="drop(event)"
+            ondragover="allowDrop(event)"
+          ></div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-label rank-a">A</div>
+          <div
+            class="tier-items"
+            ondrop="drop(event)"
+            ondragover="allowDrop(event)"
+          ></div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-label rank-b">B</div>
+          <div
+            class="tier-items"
+            ondrop="drop(event)"
+            ondragover="allowDrop(event)"
+          ></div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-label rank-c">C</div>
+          <div
+            class="tier-items"
+            ondrop="drop(event)"
+            ondragover="allowDrop(event)"
+          ></div>
+        </div>
+        <div class="tier-row">
+          <div class="tier-label rank-d">D</div>
+          <div
+            class="tier-items"
+            ondrop="drop(event)"
+            ondragover="allowDrop(event)"
+          ></div>
+        </div>
+      </main>
+
+      <aside class="side-panel">
+        <div class="preview-box" id="previewBox">
+          <p class="preview-placeholder">
+            아이템에 마우스를 올리면<br />상세 정보가 표시됩니다.
+          </p>
+        </div>
+
+        <h2 style="font-size: 1.2rem; margin-bottom: 10px; color: #333">
+          📌 아이템 대기열
+        </h2>
+        <div
+          class="item-pool"
+          id="pool"
+          ondrop="drop(event)"
+          ondragover="allowDrop(event)"
+        >
+          <!-- 조원들이 전달해준 아이템 코드를 여기에 붙여넣습니다. -->
+
+          <!-- 팀원 아이템 시작 (주의: id 값은 팀원마다 고유하게 변경하세요) -->
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_1"
+          >
+            <img
+              src="https://i.namu.wiki/i/_P6zA0DnzcTqa9YtCydRoOAfKRu-OwvWL6cJ_1X9_XhbdGU-tRPwa2kkPxPLOVCtvgd_mMlsdzJNABq1pp5iQQ.webp"
+              alt="항목 이름"
+            />
+            <div class="item-name">핵밥</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_2"
+          >
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQxoh-k3CjPS3VYORKZfnKt4HSnigXTd4uD7Q&amp;s"
+              alt="항목 이름"
+            />
+            <div class="item-name">긴자료코</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_3"
+          >
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ50TZn3JNgw7tYXNJguyf1JFU-LVjc0osESA&amp;s"
+              alt="항목 이름"
+            />
+            <div class="item-name">히카리 우동</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_4"
+          >
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTo1n20O45TUJRwduvW7RFqijUzF06F9_Wy_w&amp;s"
+              alt="항목 이름"
+            />
+            <div class="item-name">호짜</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_5"
+          >
+            <img
+              src="https://mblogthumb-phinf.pstatic.net/MjAyNDA1MTFfMTAw/MDAxNzE1MzUzMzQ4Mzg5.S1Mqbp58OVU3XS0ZMogwLmpt6V3dxXfnHbItYkAAq3cg.lQVD6rquqPLHkebfSX3C5cychYoZLppfkffATLWpNhIg.JPEG/IMG_6855.jpg?type=w800"
+              alt="항목 이름"
+            />
+            <div class="item-name">수아레</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_6"
+          >
+            <img
+              src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRBd_swkmbc4G1qZ5rY-4FjGCErTqVvjbdlrA&amp;s"
+              alt="항목 이름"
+            />
+            <div class="item-name">육회 바른 연어</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_7"
+          >
+            <img
+              src="https://mblogthumb-phinf.pstatic.net/MjAyMjA1MTdfMTQw/MDAxNjUyNzQ5MTE3MTIz.BhjwyGc-JXpt57-S-J4ey6DsLPDiFZe5YL0Q-4aB0Xog.yBSK9w-HJXEkyQrV3e7ulzUhH6iTAiigDr5IMmeL_GIg.JPEG.yyy_p/SE-0D0DA320-EA52-45FE-BF75-CDF84FA49B31.jpg?type=w800"
+              alt="항목 이름"
+            />
+            <div class="item-name">궁가</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_8"
+          >
+            <img
+              src="https://encrypted-tbn3.gstatic.com/images?q=tbn:ANd9GcRiD7cqoJoVEn2Bl3KF5Pixn5FQtJ2E6NUOHQy8FLGYcoR0KKha"
+              alt="항목 이름"
+            />
+            <div class="item-name">명지 샤브</div>
+          </div>
+
+          <div
+            class="item"
+            draggable="true"
+            ondragstart="drag(event)"
+            onmouseover="showPreview(this)"
+            id="item_9"
+          >
+            <img
+              src="https://d12zq4w4guyljn.cloudfront.net/750_750_20250110012824487_menu_048bdee4626b.webp"
+              alt="항목 이름"
+            />
+            <div class="item-name">김밥천국</div>
+          </div>
+
+          <!-- 팀원 아이템 끝 -->
+        </div>
+      </aside>
+    </div>
+
+    <script>
+      function allowDrop(ev) {
+        ev.preventDefault();
+      }
+      function drag(ev) {
+        const item = ev.target.closest(".item"); // 🔥 핵심
+        ev.dataTransfer.setData("text", item.id);
+      }
+      function drop(ev) {
+        ev.preventDefault();
+
+        var data = ev.dataTransfer.getData("text");
+        var draggedElement = document.getElementById(data);
+
+        const zone = ev.target.closest(".tier-items, .item-pool");
+        if (zone) {
+          zone.appendChild(draggedElement);
+        }
+      }
+
+      // 아이템 미리보기 기능
+      function showPreview(element) {
+        var imgSrc = element.querySelector("img").src;
+        var itemName = element.querySelector(".item-name").innerText;
+        var preview = document.getElementById("previewBox");
+        preview.innerHTML =
+          '<img src="' +
+          imgSrc +
+          '" alt="미리보기 이미지"><p>' +
+          itemName +
+          "</p>";
+      }
+      let selectedItem = null;
+      let isDragging = false;
+
+      // 드래그 시작
+      document.querySelectorAll(".item").forEach((item) => {
+        item.addEventListener("dragstart", () => {
+          isDragging = true;
+
+          document
+            .querySelectorAll(".item")
+            .forEach((i) => i.classList.remove("selected"));
+          item.classList.add("selected");
+        });
+
+        item.addEventListener("dragend", () => {
+          setTimeout(() => {
+            isDragging = false;
+          }, 0);
+        });
+      });
+
+      // 클릭 선택
+      document.querySelectorAll(".item").forEach((item) => {
+        item.addEventListener("click", (e) => {
+          if (isDragging) return; // 🔥 이거 핵심
+
+          e.stopPropagation();
+
+          document
+            .querySelectorAll(".item")
+            .forEach((i) => i.classList.remove("selected"));
+
+          selectedItem = item;
+          item.classList.add("selected");
+        });
+      });
+
+      // 클릭 이동
+      document.querySelectorAll(".tier-items, .item-pool").forEach((zone) => {
+        zone.addEventListener("click", () => {
+          if (isDragging) return; // 🔥 이것도 중요
+
+          if (selectedItem) {
+            zone.appendChild(selectedItem);
+            selectedItem.classList.remove("selected");
+            selectedItem = null;
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
