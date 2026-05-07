@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>팀명미정</title>
+  <link rel="stylesheet" href="Tstyle.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Noto+Sans+KR:wght@300;400;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+  <!-- 배경 파티클 캔버스 -->
+  <canvas id="bgCanvas"></canvas>
+
+  <!-- 헤더 -->
+  <header id="mainHeader">
+    <div class="header-inner">
+      <div class="logo">
+        <span class="logo-icon">◈</span>
+        <span class="logo-text">VIBE<span class="logo-accent">FINDER</span></span>
+      </div>
+      <nav class="main-nav">
+        <button class="nav-btn active" data-page="lobby">🏠 로비</button>
+        <button class="nav-btn" data-page="search">🔍 검색</button>
+        <button class="nav-btn" data-page="roulette">🎰 룰렛</button>
+        <button class="nav-btn" data-page="register">➕ 등록</button>
+        <button class="nav-btn" data-page="mylist">❤️ 내 목록</button>
+      </nav>
+      <div class="header-right">
+        <span class="live-badge">● LIVE</span>
+      </div>
+    </div>
+  </header>
+
+  <!-- 메인 컨테이너 -->
+  <main id="app">
+
+    <!-- ====== PAGE: 로비 ====== -->
+    <section id="page-lobby" class="page active">
+      <div class="lobby-hero">
+        <div class="hero-text">
+          <div class="hero-sub">오늘 기분에 맞는</div>
+          <h1 class="hero-title">게임과 음악을<br/><span class="glow-text">찾아보세요</span></h1>
+          <div class="hero-desc">키워드 조합으로 취향 저격 콘텐츠 발견</div>
+          <div class="hero-actions">
+            <button class="btn-primary" onclick="goPage('search')">🔍 키워드 검색 시작</button>
+            <button class="btn-secondary" onclick="goPage('roulette')">🎰 랜덤 룰렛</button>
+          </div>
+        </div>
+        <div class="hero-visual">
+          <div class="orbit-ring ring1"></div>
+          <div class="orbit-ring ring2"></div>
+          <div class="orbit-ring ring3"></div>
+          <div class="orbit-center">◈</div>
+        </div>
+      </div>
+
+      <!-- 오늘의 추천 키워드 -->
+      <div class="section-block">
+        <div class="section-header">
+          <h2 class="section-title"><span class="accent">◆</span> 오늘의 인기 키워드</h2>
+        </div>
+        <div id="trendKeywords" class="trend-keywords"></div>
+      </div>
+
+      <!-- 탭: 음악 / 게임 -->
+      <div class="section-block">
+        <div class="section-header">
+          <h2 class="section-title"><span class="accent">◆</span> 인기 콘텐츠</h2>
+          <div class="tab-group">
+            <button class="tab-btn active" data-tab="music">🎵 음악</button>
+            <button class="tab-btn" data-tab="game">🎮 게임</button>
+          </div>
+          <div class="sort-group">
+            <button class="sort-btn active" data-sort="likes">❤️ 추천순</button>
+            <button class="sort-btn" data-sort="views">👁 조회순</button>
+            <button class="sort-btn" data-sort="newest">🕐 최신순</button>
+          </div>
+        </div>
+        <div id="lobbyCards" class="card-grid"></div>
+        <button class="btn-more" onclick="goPage('search')">더 많은 콘텐츠 보기 →</button>
+      </div>
+
+      <!-- 최근 추가 -->
+      <div class="section-block">
+        <div class="section-header">
+          <h2 class="section-title"><span class="accent">◆</span> 최근 추가된 콘텐츠</h2>
+        </div>
+        <div id="recentCards" class="card-grid small"></div>
+      </div>
+    </section>
+
+    <!-- ====== PAGE: 검색 ====== -->
+    <section id="page-search" class="page">
+      <div class="search-header">
+        <h2 class="page-title">🔍 키워드 검색</h2>
+        <div class="title-search-wrap">
+          <input type="text" id="titleSearchInput" placeholder="제목으로 검색..." class="title-search-input" />
+          <button class="btn-icon" onclick="doSearch()">검색</button>
+        </div>
+      </div>
+
+      <div class="search-layout">
+        <!-- 키워드 패널 -->
+        <aside class="keyword-panel">
+          <div class="keyword-section-header">
+            <span>🎵 음악 키워드</span>
+            <button class="btn-clear-kw" onclick="clearKeywords('music')">초기화</button>
+          </div>
+
+          <div class="kw-group">
+            <div class="kw-group-label">분위기</div>
+            <div class="kw-tags" data-category="music-mood">
+              <span class="kw-tag" data-value="재밌는">재밌는</span>
+              <span class="kw-tag" data-value="신나는">신나는</span>
+              <span class="kw-tag" data-value="조용한">조용한</span>
+              <span class="kw-tag" data-value="감성적인">감성적인</span>
+              <span class="kw-tag" data-value="우울한">우울한</span>
+              <span class="kw-tag" data-value="몽환적인">몽환적인</span>
+              <span class="kw-tag" data-value="긴장감있는">긴장감있는</span>
+            </div>
+          </div>
+          <div class="kw-group">
+            <div class="kw-group-label">장르</div>
+            <div class="kw-tags" data-category="music-genre">
+              <span class="kw-tag" data-value="펑크">펑크</span>
+              <span class="kw-tag" data-value="발라드">발라드</span>
+              <span class="kw-tag" data-value="힙합">힙합</span>
+              <span class="kw-tag" data-value="EDM">EDM</span>
+              <span class="kw-tag" data-value="아이돌">아이돌</span>
+              <span class="kw-tag" data-value="락">락</span>
+              <span class="kw-tag" data-value="재즈">재즈</span>
+            </div>
+          </div>
+          <div class="kw-group">
+            <div class="kw-group-label">국가 / 장르</div>
+            <div class="kw-tags" data-category="music-nation">
+              <span class="kw-tag" data-value="팝송">팝송</span>
+              <span class="kw-tag" data-value="J팝">J팝</span>
+              <span class="kw-tag" data-value="K팝">K팝</span>
+              <span class="kw-tag" data-value="클래식">클래식</span>
+              <span class="kw-tag" data-value="애니송">애니송</span>
+            </div>
+          </div>
+          <div class="kw-group">
+            <div class="kw-group-label">상황</div>
+            <div class="kw-tags" data-category="music-situation">
+              <span class="kw-tag" data-value="공부할때">공부할때</span>
+              <span class="kw-tag" data-value="운동할때">운동할때</span>
+              <span class="kw-tag" data-value="새벽감성">새벽감성</span>
+              <span class="kw-tag" data-value="드라이브">드라이브</span>
+              <span class="kw-tag" data-value="집중용">집중용</span>
+            </div>
+          </div>
+
+          <div class="keyword-section-header" style="margin-top:1.5rem;">
+            <span>🎮 게임 키워드</span>
+            <button class="btn-clear-kw" onclick="clearKeywords('game')">초기화</button>
+          </div>
+
+          <div class="kw-group">
+            <div class="kw-group-label">장르</div>
+            <div class="kw-tags" data-category="game-genre">
+              <span class="kw-tag" data-value="로그라이크">로그라이크</span>
+              <span class="kw-tag" data-value="FPS">FPS</span>
+              <span class="kw-tag" data-value="RPG">RPG</span>
+              <span class="kw-tag" data-value="리듬게임">리듬게임</span>
+              <span class="kw-tag" data-value="공포게임">공포게임</span>
+              <span class="kw-tag" data-value="전략게임">전략게임</span>
+            </div>
+          </div>
+          <div class="kw-group">
+            <div class="kw-group-label">플레이 방식</div>
+            <div class="kw-tags" data-category="game-play">
+              <span class="kw-tag" data-value="멀티플레이">멀티플레이</span>
+              <span class="kw-tag" data-value="싱글플레이">싱글플레이</span>
+              <span class="kw-tag" data-value="협동">협동</span>
+              <span class="kw-tag" data-value="경쟁">경쟁</span>
+            </div>
+          </div>
+          <div class="kw-group">
+            <div class="kw-group-label">시점</div>
+            <div class="kw-tags" data-category="game-view">
+              <span class="kw-tag" data-value="1인칭">1인칭</span>
+              <span class="kw-tag" data-value="3인칭">3인칭</span>
+              <span class="kw-tag" data-value="탑다운">탑다운</span>
+              <span class="kw-tag" data-value="횡스크롤">횡스크롤</span>
+            </div>
+          </div>
+          <div class="kw-group">
+            <div class="kw-group-label">분위기</div>
+            <div class="kw-tags" data-category="game-mood">
+              <span class="kw-tag" data-value="긴장감있는">긴장감있는</span>
+              <span class="kw-tag" data-value="힐링">힐링</span>
+              <span class="kw-tag" data-value="어려운">어려운</span>
+              <span class="kw-tag" data-value="캐주얼">캐주얼</span>
+              <span class="kw-tag" data-value="스토리중심">스토리중심</span>
+            </div>
+          </div>
+
+          <button class="btn-search-main" onclick="doSearch()">🔍 검색하기</button>
+          <button class="btn-clear-all" onclick="clearAllKeywords()">전체 초기화</button>
+        </aside>
+
+        <!-- 결과 패널 -->
+        <div class="result-panel">
+          <!-- 선택된 키워드 표시 -->
+          <div id="selectedKeywordsBar" class="selected-keywords-bar" style="display:none;">
+            <span class="bar-label">선택된 키워드:</span>
+            <div id="selectedTagsDisplay"></div>
+          </div>
+
+          <!-- 정렬 -->
+          <div class="result-toolbar">
+            <div id="resultCount" class="result-count"></div>
+            <div class="sort-group">
+              <button class="sort-btn active" data-sort="match">🎯 일치순</button>
+              <button class="sort-btn" data-sort="likes">❤️ 추천순</button>
+              <button class="sort-btn" data-sort="views">👁 조회순</button>
+              <button class="sort-btn" data-sort="newest">🕐 최신순</button>
+            </div>
+            <div class="type-filter">
+              <button class="type-btn active" data-type="all">전체</button>
+              <button class="type-btn" data-type="music">🎵 음악</button>
+              <button class="type-btn" data-type="game">🎮 게임</button>
+            </div>
+          </div>
+
+          <div id="searchResults" class="card-grid">
+            <div class="empty-state">
+              <div class="empty-icon">🎯</div>
+              <p>키워드를 선택하거나 제목을 검색하면<br/>콘텐츠가 나타납니다</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== PAGE: 룰렛 ====== -->
+    <section id="page-roulette" class="page">
+      <div class="roulette-layout">
+        <div class="roulette-left">
+          <h2 class="page-title">🎰 랜덤 룰렛</h2>
+          <p class="roulette-desc">키워드를 선택하고 룰렛을 돌려보세요!<br/>운명이 당신의 콘텐츠를 골라드립니다.</p>
+
+          <div class="roulette-mode">
+            <button class="mode-btn active" data-mode="music">🎵 음악</button>
+            <button class="mode-btn" data-mode="game">🎮 게임</button>
+            <button class="mode-btn" data-mode="mix">🎲 랜덤 믹스</button>
+          </div>
+
+          <div class="roulette-kw-section">
+            <div class="kw-group">
+              <div class="kw-group-label">키워드 선택 (선택 안해도 됩니다)</div>
+              <div class="kw-tags" id="rouletteKeywords">
+                <span class="kw-tag" data-value="신나는">신나는</span>
+                <span class="kw-tag" data-value="조용한">조용한</span>
+                <span class="kw-tag" data-value="몽환적인">몽환적인</span>
+                <span class="kw-tag" data-value="EDM">EDM</span>
+                <span class="kw-tag" data-value="K팝">K팝</span>
+                <span class="kw-tag" data-value="J팝">J팝</span>
+                <span class="kw-tag" data-value="RPG">RPG</span>
+                <span class="kw-tag" data-value="FPS">FPS</span>
+                <span class="kw-tag" data-value="힐링">힐링</span>
+                <span class="kw-tag" data-value="긴장감있는">긴장감있는</span>
+              </div>
+            </div>
+          </div>
+
+          <button class="btn-spin" id="spinBtn" onclick="spinRoulette()">
+            <span class="spin-icon">⚡</span>
+            <span>룰렛 돌리기!</span>
+          </button>
+        </div>
+
+        <div class="roulette-right">
+          <div class="roulette-wheel-wrap">
+            <div class="roulette-pointer">▼</div>
+            <div id="rouletteWheel" class="roulette-wheel">
+              <canvas id="wheelCanvas" width="380" height="380"></canvas>
+            </div>
+          </div>
+          <div id="rouletteResult" class="roulette-result" style="display:none;"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====== PAGE: 등록 ====== -->
+    <section id="page-register" class="page">
+      <h2 class="page-title">➕ 콘텐츠 등록</h2>
+      <div class="register-tabs">
+        <button class="reg-tab active" data-regtype="music">🎵 음악 등록</button>
+        <button class="reg-tab" data-regtype="game">🎮 게임 등록</button>
+      </div>
+
+      <!-- 음악 등록 -->
+      <form id="musicForm" class="reg-form" onsubmit="registerContent(event,'music')">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>곡 제목 *</label>
+            <input type="text" name="title" placeholder="예: Night Drive" required />
+          </div>
+          <div class="form-group">
+            <label>가수 / 아티스트 *</label>
+            <input type="text" name="artist" placeholder="예: 아이유" required />
+          </div>
+          <div class="form-group">
+            <label>앨범 이미지 URL</label>
+            <input type="url" name="image" placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label>유튜브 링크</label>
+            <input type="url" name="link" placeholder="https://youtube.com/..." />
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>키워드 선택 (분위기)</label>
+          <div class="kw-tags form-kw" data-form="music-mood">
+            <span class="kw-tag" data-value="재밌는">재밌는</span>
+            <span class="kw-tag" data-value="신나는">신나는</span>
+            <span class="kw-tag" data-value="조용한">조용한</span>
+            <span class="kw-tag" data-value="감성적인">감성적인</span>
+            <span class="kw-tag" data-value="우울한">우울한</span>
+            <span class="kw-tag" data-value="몽환적인">몽환적인</span>
+            <span class="kw-tag" data-value="긴장감있는">긴장감있는</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>키워드 선택 (장르/국가/상황)</label>
+          <div class="kw-tags form-kw" data-form="music-tag">
+            <span class="kw-tag" data-value="팝송">팝송</span>
+            <span class="kw-tag" data-value="J팝">J팝</span>
+            <span class="kw-tag" data-value="K팝">K팝</span>
+            <span class="kw-tag" data-value="애니송">애니송</span>
+            <span class="kw-tag" data-value="클래식">클래식</span>
+            <span class="kw-tag" data-value="EDM">EDM</span>
+            <span class="kw-tag" data-value="힙합">힙합</span>
+            <span class="kw-tag" data-value="발라드">발라드</span>
+            <span class="kw-tag" data-value="락">락</span>
+            <span class="kw-tag" data-value="재즈">재즈</span>
+            <span class="kw-tag" data-value="아이돌">아이돌</span>
+            <span class="kw-tag" data-value="공부할때">공부할때</span>
+            <span class="kw-tag" data-value="운동할때">운동할때</span>
+            <span class="kw-tag" data-value="새벽감성">새벽감성</span>
+            <span class="kw-tag" data-value="드라이브">드라이브</span>
+            <span class="kw-tag" data-value="집중용">집중용</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>설명</label>
+          <textarea name="desc" placeholder="이 음악에 대한 간단한 설명..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary">🎵 음악 등록하기</button>
+      </form>
+
+      <!-- 게임 등록 -->
+      <form id="gameForm" class="reg-form" style="display:none;" onsubmit="registerContent(event,'game')">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>게임 제목 *</label>
+            <input type="text" name="title" placeholder="예: Hades" required />
+          </div>
+          <div class="form-group">
+            <label>플랫폼</label>
+            <input type="text" name="platform" placeholder="예: PC, PS5, Switch" />
+          </div>
+          <div class="form-group">
+            <label>게임 이미지 URL</label>
+            <input type="url" name="image" placeholder="https://..." />
+          </div>
+          <div class="form-group">
+            <label>스팀 / 공식 링크</label>
+            <input type="url" name="link" placeholder="https://store.steampowered.com/..." />
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>키워드 선택 (장르)</label>
+          <div class="kw-tags form-kw" data-form="game-genre">
+            <span class="kw-tag" data-value="로그라이크">로그라이크</span>
+            <span class="kw-tag" data-value="FPS">FPS</span>
+            <span class="kw-tag" data-value="RPG">RPG</span>
+            <span class="kw-tag" data-value="리듬게임">리듬게임</span>
+            <span class="kw-tag" data-value="공포게임">공포게임</span>
+            <span class="kw-tag" data-value="전략게임">전략게임</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>키워드 선택 (플레이/시점/분위기)</label>
+          <div class="kw-tags form-kw" data-form="game-tag">
+            <span class="kw-tag" data-value="멀티플레이">멀티플레이</span>
+            <span class="kw-tag" data-value="싱글플레이">싱글플레이</span>
+            <span class="kw-tag" data-value="협동">협동</span>
+            <span class="kw-tag" data-value="경쟁">경쟁</span>
+            <span class="kw-tag" data-value="1인칭">1인칭</span>
+            <span class="kw-tag" data-value="3인칭">3인칭</span>
+            <span class="kw-tag" data-value="탑다운">탑다운</span>
+            <span class="kw-tag" data-value="횡스크롤">횡스크롤</span>
+            <span class="kw-tag" data-value="긴장감있는">긴장감있는</span>
+            <span class="kw-tag" data-value="힐링">힐링</span>
+            <span class="kw-tag" data-value="어려운">어려운</span>
+            <span class="kw-tag" data-value="캐주얼">캐주얼</span>
+            <span class="kw-tag" data-value="스토리중심">스토리중심</span>
+          </div>
+        </div>
+        <div class="form-group full">
+          <label>설명</label>
+          <textarea name="desc" placeholder="게임에 대한 간단한 설명..."></textarea>
+        </div>
+        <button type="submit" class="btn-primary">🎮 게임 등록하기</button>
+      </form>
+    </section>
+
+    <!-- ====== PAGE: 내 목록 ====== -->
+    <section id="page-mylist" class="page">
+      <h2 class="page-title">❤️ 내 목록</h2>
+      <div class="mylist-tabs">
+        <button class="mylist-tab active" data-mytype="liked">❤️ 좋아요</button>
+        <button class="mylist-tab" data-mytype="bookmarked">🔖 북마크</button>
+      </div>
+      <div class="sort-group" style="margin-bottom:1.5rem;">
+        <button class="sort-btn active" data-sort="likes">❤️ 추천순</button>
+        <button class="sort-btn" data-sort="views">👁 조회순</button>
+        <button class="sort-btn" data-sort="newest">🕐 최신순</button>
+      </div>
+      <div id="mylistCards" class="card-grid"></div>
+    </section>
+
+  </main><!-- /app -->
+
+  <!-- 콘텐츠 상세 모달 -->
+  <div id="detailModal" class="modal-overlay" style="display:none;">
+    <div class="modal-box">
+      <button class="modal-close" onclick="closeModal()">✕</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div id="toast" class="toast"></div>
+
+  <script src="Tscript.js"></script>
+</body>
+</html>

@@ -186,6 +186,11 @@ html, body {
       <div class="card-txt"><h2>나의 매거진</h2><p>인생 영화 추천</p></div>
       <button class="btn">보러가기</button>
     </div>
+    <div class="card" onclick="goTo('Tindex.html')">
+      <div class="icon">◈</div>
+      <div class="card-txt"><h2>팀플</h2><p>음악 + 게임 추천</p></div>
+      <button class="btn">보러가기</button>
+    </div>
   </div>
 </div>
 
@@ -404,14 +409,12 @@ function drawPine(sx, sy, sh, layers){
 }
 
 function drawTrees(){
-  // 왼쪽 나무 3그루
+  // 왼쪽 나무 2그루
   drawPine(0.076, 0.90, 0.155, 3);
   drawPine(0.154, 0.90, 0.130, 3);
-  drawPine(0.024, 0.92, 0.100, 2);
-  // 오른쪽 나무 3그루
+  // 오른쪽 나무 2그루
   drawPine(0.924, 0.90, 0.155, 3);
   drawPine(0.846, 0.90, 0.130, 3);
-  drawPine(0.976, 0.92, 0.100, 2);
 }
 
 /* ─────────────────────────────────────────
